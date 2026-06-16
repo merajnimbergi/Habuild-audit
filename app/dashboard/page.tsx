@@ -36,7 +36,7 @@ export default function Dashboard() {
     if (agentName) {
       fetchFeedback(agentName);
     }
-  }, [filter]);
+  }, [agentName, filter]);
 
   const handleLogin = () => {
     if (inputName.trim()) {
