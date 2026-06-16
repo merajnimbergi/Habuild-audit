@@ -41,7 +41,6 @@ export default function Dashboard() {
   const handleLogin = () => {
     if (inputName.trim()) {
       setAgentName(inputName);
-      fetchFeedback(inputName);
     }
   };
 
