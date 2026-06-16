@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { feedback_id, method } = body; // method: 'email', 'whatsapp', 'dashboard'
 
-    const data = await kv.get('habuild:feedback');
+    const data = (await kv.get('habuild:feedback')) as any;
     if (!data) {
       return NextResponse.json(
         { error: 'No feedback found' },
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const feedback = data.feedback.find((f: any) => f.id === feedback_id);
+    const feedback = (data?.feedback || []).find((f: any) => f.id === feedback_id);
 
     if (!feedback) {
       return NextResponse.json(
@@ -71,116 +71,3 @@ async function sendFeedbackEmail(feedback: any) {
   }
 }
 
-function generateEmailHTML(feedback: any, scoreColor: string): string {
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      background: white;
-      max-width: 600px;
-      margin: 0 auto;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .header {
-      background: linear-gradient(135deg, #FF6B9D 0%, #FFA07A 50%, #FFD93D 100%);
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 24px;
-    }
-    .content {
-      padding: 30px;
-    }
-    .score-box {
-      display: inline-block;
-      background-color: ${scoreColor};
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-    .feedback-section {
-      background-color: #f9f9f9;
-      padding: 20px;
-      border-left: 4px solid ${scoreColor};
-      margin: 20px 0;
-      border-radius: 4px;
-    }
-    .details {
-      font-size: 14px;
-      color: #666;
-      margin: 20px 0;
-    }
-    .details p {
-      margin: 8px 0;
-    }
-    .label {
-      font-weight: bold;
-      color: #333;
-    }
-    .button {
-      display: inline-block;
-      background-color: #8B6F47;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 4px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .footer {
-      background-color: #f5f5f5;
-      padding: 15px;
-      text-align: center;
-      font-size: 12px;
-      color: #999;
-      border-top: 1px solid #eee;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>📞 Call Audit Feedback</h1>
-    </div>
-    <div class="content">
-      <h2>Hi ${feedback.agent_name},</h2>
-      <p>You have new feedback from your recent call audit.</p>
-
-      <div class="score-box">Score: ${feedback.score.toFixed(1)}/5</div>
-
-      <div class="details">
-        <p><span class="label">Call Date:</span> ${new Date(feedback.call_date).toLocaleDateString()}</p>
-        <p><span class="label">Audited By:</span> ${feedback.auditor_name}</p>
-        <p><span class="label">Category:</span> ${feedback.category}</p>
-      </div>
-
-      <div class="feedback-section">
-        <h3>Feedback:</h3>
-        <p>${feedback.feedback || 'No specific feedback provided'}</p>
-      </div>
-
-      <p>View all your feedback on your dashboard to track progress.</p>
-    </div>
-    <div class="footer">
-      <p>Habuild Yoga - Quality Assurance System</p>
-    </div>
-  </div>
-</body>
-</html>
-  `;
-}

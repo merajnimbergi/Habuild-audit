@@ -3,7 +3,7 @@ import { kv } from '@vercel/kv';
 
 async function getFeedbackData() {
   try {
-    const data = await kv.get('habuild:feedback');
+    const data = (await kv.get('habuild:feedback')) as any;
     return data || { feedback: [], nextId: 1 };
   } catch (error) {
     return { feedback: [], nextId: 1 };

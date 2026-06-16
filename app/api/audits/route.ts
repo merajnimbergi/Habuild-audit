@@ -3,8 +3,8 @@ import { kv } from '@vercel/kv';
 
 async function getAudits(filters: any = {}) {
   try {
-    const data = await kv.get('habuild:audits');
-    let audits = data?.audits || [];
+    const data = await kv.get('habuild:audits') as any;
+    let audits = (data?.audits as any[]) || [];
 
     if (filters.auditor) {
       audits = audits.filter((a: any) => a.auditor === filters.auditor);
@@ -25,7 +25,7 @@ async function getAudits(filters: any = {}) {
 
 async function insertAudit(auditData: any) {
   try {
-    const data: any = await kv.get('habuild:audits') || { audits: [], nextId: 1 };
+    const data: any = (await kv.get('habuild:audits')) as any || { audits: [], nextId: 1 };
 
     const audit = {
       id: data.nextId++,
@@ -55,7 +55,7 @@ async function insertAudit(auditData: any) {
 
 async function createFeedbackNotification(audit: any) {
   try {
-    const feedbackData: any = await kv.get('habuild:feedback') || { feedback: [], nextId: 1 };
+    const feedbackData: any = (await kv.get('habuild:feedback')) as any || { feedback: [], nextId: 1 };
 
     const feedback: any = {
       id: feedbackData.nextId++,
