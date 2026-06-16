@@ -20,13 +20,18 @@ export async function GET(request: NextRequest) {
     const agentName = searchParams.get('agent_name');
     const status = searchParams.get('status');
 
+    console.log('Feedback API - Received agentName:', agentName);
+
     const data = await getFeedbackData();
     let feedback = data.feedback || [];
+
+    console.log('Total feedback in Redis:', feedback.length);
 
     if (agentName) {
       feedback = feedback.filter((f: any) =>
         f.agent_name.toLowerCase() === agentName.toLowerCase()
       );
+      console.log('Filtered feedback for agent:', agentName, 'Count:', feedback.length);
     }
 
     if (status) {
