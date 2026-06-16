@@ -7,15 +7,26 @@ interface Feedback {
   id: number;
   audit_id: number;
   agent_name: string;
+  agent_phone?: string;
   auditor_name: string;
   category: string;
   score: number;
   feedback: string;
   call_date: string;
+  audit_date?: string;
   created_at: string;
   agent_viewed: boolean;
   delivery_status: string;
   delivery_channels: string[];
+  ratings?: {
+    opening: number;
+    accuracy: number;
+    listening: number;
+    tone: number;
+    knowledge: number;
+    response_time: number;
+    fcr: number;
+  };
 }
 
 export default function Dashboard() {
@@ -198,7 +209,7 @@ export default function Dashboard() {
                         📅 Call Date: {new Date(f.call_date).toLocaleDateString()}
                       </p>
                       <p className={styles.date}>
-                        📋 Audit Date: {new Date(f.audit_date).toLocaleDateString()}
+                        📋 Audit Date: {f.audit_date ? new Date(f.audit_date).toLocaleDateString() : 'N/A'}
                       </p>
                     </div>
                   </div>
