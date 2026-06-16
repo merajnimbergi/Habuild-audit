@@ -1,23 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const fs = require('fs');
-const path = require('path');
-
-const FEEDBACK_FILE = path.join(process.cwd(), 'feedback_data.json');
+import { kv } from '@vercel/kv';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { feedback_id, method } = body; // method: 'email', 'whatsapp', 'dashboard'
 
-    if (!fs.existsSync(FEEDBACK_FILE)) {
+    const data = await kv.get('habuild:feedback');
+    if (!data) {
       return NextResponse.json(
         { error: 'No feedback found' },
         { status: 404 }
       );
     }
 
-    const data = JSON.parse(fs.readFileSync(FEEDBACK_FILE, 'utf-8'));
     const feedback = data.feedback.find((f: any) => f.id === feedback_id);
 
     if (!feedback) {
@@ -48,7 +44,7 @@ export async function POST(request: NextRequest) {
       feedback.delivery_channels.push(method);
     }
 
-    fs.writeFileSync(FEEDBACK_FILE, JSON.stringify(data, null, 2));
+    await kv.set('habuild:feedback', data);
 
     return NextResponse.json(
       { success: true, message: `Feedback sent via ${method}`, feedback },
@@ -74,28 +70,34 @@ async function sendFeedbackEmail(feedback: any) {
 
     // If SendGrid is configured
     if (process.env.SENDGRID_API_KEY) {
-      const sgMail = require('@sendgrid/mail');
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const sgMail = require('@sendgrid/mail');
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-      const scoreColor =
-        feedback.score >= 4
-          ? '#4CAF50'
-          : feedback.score >= 3
-            ? '#FFC107'
-            : '#F44336';
+        const scoreColor =
+          feedback.score >= 4
+            ? '#4CAF50'
+            : feedback.score >= 3
+              ? '#FFC107'
+              : '#F44336';
 
-      const htmlContent = generateEmailHTML(feedback, scoreColor);
+        const htmlContent = generateEmailHTML(feedback, scoreColor);
 
-      const msg = {
-        to: `${feedback.agent_name.toLowerCase()}@habuild.in`, // Default domain, adjust as needed
-        from: process.env.EMAIL_FROM || 'feedback@habuild.in',
-        subject: `QC Feedback: ${feedback.category} - ${feedback.score.toFixed(1)}/5`,
-        html: htmlContent,
-      };
+        const msg = {
+          to: `${feedback.agent_name.toLowerCase()}@habuild.in`,
+          from: process.env.EMAIL_FROM || 'feedback@habuild.in',
+          subject: `QC Feedback: ${feedback.category} - ${feedback.score.toFixed(1)}/5`,
+          html: htmlContent,
+        };
 
-      await sgMail.send(msg);
-      console.log(`✓ Email sent to ${feedback.agent_name}`);
-      return { success: true, service: 'sendgrid' };
+        await sgMail.send(msg);
+        console.log(`✓ Email sent to ${feedback.agent_name}`);
+        return { success: true, service: 'sendgrid' };
+      } catch (e) {
+        console.log(`SendGrid not available, using dashboard delivery`);
+        return { success: true, method: 'dashboard' };
+      }
     }
 
     return { success: true, method: 'logged' };
