@@ -10,6 +10,15 @@ async function getFeedbackData() {
   }
 }
 
+async function getAuditsData() {
+  try {
+    const data = (await kv.get('habuild:audits')) as any;
+    return data || { audits: [], nextId: 1 };
+  } catch (error) {
+    return { audits: [], nextId: 1 };
+  }
+}
+
 async function saveFeedbackData(data: any) {
   await kv.set('habuild:feedback', data);
 }
@@ -23,6 +32,7 @@ export async function GET(request: NextRequest) {
     console.log('Feedback API - Received agentName:', agentName);
 
     const data = await getFeedbackData();
+    const auditsData = await getAuditsData();
     let feedback = data.feedback || [];
 
     console.log('Total feedback in Redis:', feedback.length);
@@ -41,6 +51,28 @@ export async function GET(request: NextRequest) {
         feedback = feedback.filter((f: any) => f.agent_viewed);
       }
     }
+
+    // Enrich feedback with audit ratings if not already present
+    feedback = feedback.map((f: any) => {
+      if (!f.ratings && f.audit_id && auditsData.audits) {
+        const audit = auditsData.audits.find((a: any) => a.id === f.audit_id);
+        if (audit) {
+          f.ratings = {
+            opening: audit.opening,
+            accuracy: audit.accuracy,
+            listening: audit.listening,
+            tone: audit.tone,
+            knowledge: audit.knowledge,
+            response_time: audit.response_time,
+            fcr: audit.fcr,
+          };
+          if (!f.audit_date && audit.audit_date) {
+            f.audit_date = audit.audit_date;
+          }
+        }
+      }
+      return f;
+    });
 
     feedback.sort(
       (a: any, b: any) =>
