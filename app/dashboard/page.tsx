@@ -41,15 +41,16 @@ export default function Dashboard() {
   const handleLogin = () => {
     if (inputName.trim()) {
       setAgentName(inputName);
-      fetchFeedback();
+      fetchFeedback(inputName);
     }
   };
 
-  const fetchFeedback = async () => {
+  const fetchFeedback = async (name?: string) => {
+    const agentToFetch = name || agentName;
     setLoading(true);
     try {
       const url = new URL('/api/feedback', window.location.origin);
-      url.searchParams.set('agent_name', agentName);
+      url.searchParams.set('agent_name', agentToFetch);
       if (filter !== 'all') {
         url.searchParams.set('status', filter === 'pending' ? 'pending' : 'viewed');
       }
