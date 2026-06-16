@@ -112,9 +112,10 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error inserting audit:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error inserting audit:', errorMsg, error);
     return NextResponse.json(
-      { error: 'Failed to submit audit' },
+      { error: 'Failed to submit audit', details: errorMsg },
       { status: 500 }
     );
   }
