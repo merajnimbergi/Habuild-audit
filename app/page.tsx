@@ -105,8 +105,15 @@ export default function AuditForm() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h1 className={styles.title}>📞 Call Audit Entry</h1>
-        <p className={styles.subtitle}>Quick call quality audit form</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <div>
+            <h1 className={styles.title}>📞 Call Audit Entry</h1>
+            <p className={styles.subtitle}>Quick call quality audit form</p>
+          </div>
+          <a href="/dashboard" style={{ color: '#D4AF37', textDecoration: 'none', fontSize: '1rem', fontWeight: 'bold' }}>
+            👤 View Feedback
+          </a>
+        </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {/* Row 1: Dates */}

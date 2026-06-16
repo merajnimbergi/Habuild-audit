@@ -53,10 +53,58 @@ function insertAudit(auditData: any) {
     data.audits.push(audit);
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 
+    // Create feedback notification for agent
+    createFeedbackNotification(audit);
+
     return { lastInsertRowid: audit.id };
   } catch (error) {
     console.error('Error inserting audit:', error);
     throw error;
+  }
+}
+
+function createFeedbackNotification(audit: any) {
+  try {
+    const feedbackFile = path.join(process.cwd(), 'feedback_data.json');
+    let feedbackData = { feedback: [], nextId: 1 };
+    if (fs.existsSync(feedbackFile)) {
+      feedbackData = JSON.parse(fs.readFileSync(feedbackFile, 'utf-8'));
+    }
+
+    const feedback = {
+      id: feedbackData.nextId++,
+      audit_id: audit.id,
+      agent_name: audit.agent,
+      agent_phone: audit.phone_number || '',
+      auditor_name: audit.auditor,
+      category: audit.category || 'General',
+      score: parseFloat(
+        (
+          (audit.opening +
+            audit.accuracy +
+            audit.listening +
+            audit.tone +
+            audit.knowledge +
+            audit.response_time +
+            audit.fcr) /
+          7
+        ).toFixed(2)
+      ),
+      feedback: audit.call_summary || '',
+      call_date: audit.call_date,
+      created_at: new Date().toISOString(),
+      sent_at: null,
+      delivery_status: 'pending',
+      delivery_channels: [],
+      agent_viewed: false,
+      agent_viewed_at: null,
+    };
+
+    feedbackData.feedback.push(feedback);
+    fs.writeFileSync(feedbackFile, JSON.stringify(feedbackData, null, 2));
+    console.log(`✓ Feedback notification created for ${audit.agent}`);
+  } catch (error) {
+    console.error('Error creating feedback:', error);
   }
 }
 
