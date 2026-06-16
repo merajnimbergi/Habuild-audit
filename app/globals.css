@@ -1,12 +1,12 @@
 /* Custom styles - no Tailwind needed */
 
 :root {
-  --background: #FDF5E6;
-  --foreground: #5C4033;
-  --gold: #D4AF37;
-  --earth-dark: #8B6F47;
-  --earth-light: #C19A6B;
-  --cream: #FFF8E7;
+  --background: #E8F4F2;
+  --foreground: #0B6E63;
+  --primary: #0B6E63;
+  --primary-light: #1B9B8F;
+  --primary-lighter: #2BC3AC;
+  --cream: #E8F4F2;
 }
 
 * {
@@ -20,7 +20,7 @@ html {
 }
 
 body {
-  background: linear-gradient(135deg, #FF6B9D 0%, #FFA07A 50%, #FFD93D 100%);
+  background: linear-gradient(135deg, #0B6E63 0%, #1B9B8F 50%, #2BC3AC 100%);
   color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
