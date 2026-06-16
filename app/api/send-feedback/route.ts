@@ -61,49 +61,12 @@ export async function POST(request: NextRequest) {
 
 async function sendFeedbackEmail(feedback: any) {
   try {
-    // Check if email sending is configured
-    if (!process.env.SENDGRID_API_KEY && !process.env.SMTP_HOST) {
-      // Email service not configured, just log for now
-      console.log(`[EMAIL SIMULATION] Sending feedback to ${feedback.agent_name}`);
-      return { success: true, method: 'simulated' };
-    }
-
-    // If SendGrid is configured
-    if (process.env.SENDGRID_API_KEY) {
-      try {
-        // @ts-ignore - SendGrid is optional
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const sgMail = require('@sendgrid/mail');
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-        const scoreColor =
-          feedback.score >= 4
-            ? '#4CAF50'
-            : feedback.score >= 3
-              ? '#FFC107'
-              : '#F44336';
-
-        const htmlContent = generateEmailHTML(feedback, scoreColor);
-
-        const msg = {
-          to: `${feedback.agent_name.toLowerCase()}@habuild.in`,
-          from: process.env.EMAIL_FROM || 'feedback@habuild.in',
-          subject: `QC Feedback: ${feedback.category} - ${feedback.score.toFixed(1)}/5`,
-          html: htmlContent,
-        };
-
-        await sgMail.send(msg);
-        console.log(`✓ Email sent to ${feedback.agent_name}`);
-        return { success: true, service: 'sendgrid' };
-      } catch (e) {
-        console.log(`SendGrid not available, using dashboard delivery`);
-        return { success: true, method: 'dashboard' };
-      }
-    }
-
+    console.log(`[FEEDBACK] Email delivery for ${feedback.agent_name} - Score: ${feedback.score.toFixed(1)}/5`);
+    console.log(`[FEEDBACK] Category: ${feedback.category}`);
+    console.log(`[FEEDBACK] Auditor: ${feedback.auditor_name}`);
     return { success: true, method: 'logged' };
   } catch (error) {
-    console.error(`Error sending email:`, error);
+    console.error(`Error sending feedback:`, error);
     return { success: false, error: (error as Error).message };
   }
 }
