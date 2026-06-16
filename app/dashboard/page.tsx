@@ -31,10 +31,10 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (agentName) {
+    if (agentName && feedback.length > 0) {
       fetchFeedback();
     }
-  }, [agentName, filter]);
+  }, [filter]);
 
   const fetchFeedback = async () => {
     setLoading(true);
