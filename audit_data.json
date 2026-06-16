@@ -1,0 +1,42 @@
+{
+  "audits": [
+    {
+      "id": 1,
+      "call_date": "2026-06-16",
+      "audit_date": "2026-06-16",
+      "auditor": "Pooja",
+      "agent": "Ruchika",
+      "phone_number": "9876543210",
+      "category": "Payment",
+      "sub_category": "Guidance",
+      "opening": 4,
+      "accuracy": 4,
+      "listening": 3,
+      "tone": 4,
+      "knowledge": 4,
+      "response_time": 3,
+      "fcr": 4,
+      "csat_feedback": "Asked",
+      "call_summary": "Good call, excellent guidance on payment process",
+      "created_at": "2026-06-16T08:22:41.018Z",
+      "updated_at": "2026-06-16T08:22:41.018Z"
+    },
+    {
+      "id": 2,
+      "call_date": "2026-06-16",
+      "audit_date": "2026-06-16",
+      "auditor": "Pooja",
+      "agent": "Ruchika",
+      "opening": 4,
+      "accuracy": 4,
+      "listening": 3,
+      "tone": 4,
+      "knowledge": 4,
+      "response_time": 3,
+      "fcr": 4,
+      "created_at": "2026-06-16T08:22:44.382Z",
+      "updated_at": "2026-06-16T08:22:44.383Z"
+    }
+  ],
+  "nextId": 3
+}
