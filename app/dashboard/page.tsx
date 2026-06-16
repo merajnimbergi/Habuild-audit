@@ -21,8 +21,12 @@ interface Feedback {
 export default function Dashboard() {
   const [agentName, setAgentName] = useState('');
   const [feedback, setFeedback] = useState<Feedback[]>([]);
-  const [filter, setFilter] = useState('all'); // all, pending, viewed
+  const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    localStorage.removeItem('agentName');
+  }, []);
 
   useEffect(() => {
     if (agentName) {
@@ -115,6 +119,7 @@ export default function Dashboard() {
                 onClick={() => {
                   setAgentName('');
                   setFeedback([]);
+                  localStorage.removeItem('agentName');
                 }}
                 className={styles.logoutBtn}
               >
