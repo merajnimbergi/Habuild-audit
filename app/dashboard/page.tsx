@@ -25,7 +25,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    localStorage.removeItem('agentName');
+    setAgentName('');
+    localStorage.clear();
+    sessionStorage.clear();
   }, []);
 
   useEffect(() => {
