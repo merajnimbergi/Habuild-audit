@@ -1,24 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { kv } from '@vercel/kv';
+
+let feedbackStore: any = { feedback: [], nextId: 1 };
 
 async function getFeedbackData() {
-  try {
-    const data = (await kv.get('habuild:feedback')) as any;
-    return data || { feedback: [], nextId: 1 };
-  } catch (error) {
-    return { feedback: [], nextId: 1 };
-  }
+  return feedbackStore || { feedback: [], nextId: 1 };
 }
 
 async function saveFeedbackData(data: any) {
-  await kv.set('habuild:feedback', data);
+  feedbackStore = data;
 }
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const agentName = searchParams.get('agent_name');
-    const status = searchParams.get('status'); // 'pending', 'sent', 'viewed'
+    const status = searchParams.get('status');
 
     const data = await getFeedbackData();
     let feedback = data.feedback || [];
@@ -93,7 +89,6 @@ export async function POST(request: NextRequest) {
         }
         await saveFeedbackData(data);
 
-        // TODO: Actually send email/WhatsApp here
         console.log(`Sending ${action} to ${feedback.agent_name}`);
 
         return NextResponse.json(

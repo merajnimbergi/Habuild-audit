@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { kv } from '@vercel/kv';
+
+let auditStore: any = { audits: [], nextId: 1 };
+let feedbackStore: any = { feedback: [], nextId: 1 };
 
 async function getAudits(filters: any = {}) {
   try {
-    const data = await kv.get('habuild:audits') as any;
-    let audits = (data?.audits as any[]) || [];
+    let audits = (auditStore?.audits as any[]) || [];
 
     if (filters.auditor) {
       audits = audits.filter((a: any) => a.auditor === filters.auditor);
@@ -25,10 +26,8 @@ async function getAudits(filters: any = {}) {
 
 async function insertAudit(auditData: any) {
   try {
-    const data: any = (await kv.get('habuild:audits')) as any || { audits: [], nextId: 1 };
-
     const audit = {
-      id: data.nextId++,
+      id: auditStore.nextId++,
       ...auditData,
       opening: parseFloat(auditData.opening) || 0,
       accuracy: parseFloat(auditData.accuracy) || 0,
@@ -41,9 +40,7 @@ async function insertAudit(auditData: any) {
       updated_at: new Date().toISOString(),
     };
 
-    data.audits.push(audit);
-    await kv.set('habuild:audits', data);
-
+    auditStore.audits.push(audit);
     await createFeedbackNotification(audit);
 
     return { lastInsertRowid: audit.id };
@@ -55,10 +52,8 @@ async function insertAudit(auditData: any) {
 
 async function createFeedbackNotification(audit: any) {
   try {
-    const feedbackData: any = (await kv.get('habuild:feedback')) as any || { feedback: [], nextId: 1 };
-
     const feedback: any = {
-      id: feedbackData.nextId++,
+      id: feedbackStore.nextId++,
       audit_id: audit.id,
       agent_name: audit.agent,
       agent_phone: audit.phone_number || '',
@@ -86,8 +81,7 @@ async function createFeedbackNotification(audit: any) {
       agent_viewed_at: null,
     };
 
-    feedbackData.feedback.push(feedback);
-    await kv.set('habuild:feedback', feedbackData);
+    feedbackStore.feedback.push(feedback);
     console.log(`✓ Feedback notification created for ${audit.agent}`);
   } catch (error) {
     console.error('Error creating feedback:', error);
@@ -98,7 +92,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate required fields
     if (!body.auditor || !body.agent || !body.call_date || !body.audit_date) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -106,7 +99,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Insert into database
     const result = await insertAudit(body);
 
     return NextResponse.json(

@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { kv } from '@vercel/kv';
+
+let feedbackStore: any = { feedback: [], nextId: 1 };
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { feedback_id, method } = body; // method: 'email', 'whatsapp', 'dashboard'
+    const { feedback_id, method } = body;
 
-    const data = (await kv.get('habuild:feedback')) as any;
-    if (!data) {
+    if (!feedbackStore?.feedback?.length) {
       return NextResponse.json(
         { error: 'No feedback found' },
         { status: 404 }
       );
     }
 
-    const feedback = (data?.feedback || []).find((f: any) => f.id === feedback_id);
+    const feedback = feedbackStore.feedback.find((f: any) => f.id === feedback_id);
 
     if (!feedback) {
       return NextResponse.json(
@@ -23,18 +23,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send feedback based on method
     if (method === 'email') {
-      const emailResult = await sendFeedbackEmail(feedback);
-      if (!emailResult.success) {
-        return NextResponse.json(emailResult, { status: 500 });
-      }
+      console.log(`[FEEDBACK] Email delivery for ${feedback.agent_name} - Score: ${feedback.score.toFixed(1)}/5`);
     } else if (method === 'whatsapp') {
-      // TODO: Implement WhatsApp integration
-      console.log(`Would send WhatsApp to ${feedback.agent_phone}`);
+      console.log(`[FEEDBACK] WhatsApp delivery for ${feedback.agent_name}`);
     }
 
-    // Mark as sent
     feedback.delivery_status = 'sent';
     feedback.sent_at = new Date().toISOString();
     if (!feedback.delivery_channels) {
@@ -43,8 +37,6 @@ export async function POST(request: NextRequest) {
     if (!feedback.delivery_channels.includes(method)) {
       feedback.delivery_channels.push(method);
     }
-
-    await kv.set('habuild:feedback', data);
 
     return NextResponse.json(
       { success: true, message: `Feedback sent via ${method}`, feedback },
@@ -58,16 +50,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-async function sendFeedbackEmail(feedback: any) {
-  try {
-    console.log(`[FEEDBACK] Email delivery for ${feedback.agent_name} - Score: ${feedback.score.toFixed(1)}/5`);
-    console.log(`[FEEDBACK] Category: ${feedback.category}`);
-    console.log(`[FEEDBACK] Auditor: ${feedback.auditor_name}`);
-    return { success: true, method: 'logged' };
-  } catch (error) {
-    console.error(`Error sending feedback:`, error);
-    return { success: false, error: (error as Error).message };
-  }
-}
-
