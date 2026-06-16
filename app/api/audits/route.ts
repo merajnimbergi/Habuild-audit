@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-let auditStore: any = { audits: [], nextId: 1 };
-let feedbackStore: any = { feedback: [], nextId: 1 };
+import { kv } from '@vercel/kv';
 
 async function getAudits(filters: any = {}) {
   try {
-    let audits = (auditStore?.audits as any[]) || [];
+    const data = (await kv.get('habuild:audits')) as any;
+    let audits = (data?.audits as any[]) || [];
 
     if (filters.auditor) {
       audits = audits.filter((a: any) => a.auditor === filters.auditor);
@@ -26,8 +25,10 @@ async function getAudits(filters: any = {}) {
 
 async function insertAudit(auditData: any) {
   try {
+    const data: any = (await kv.get('habuild:audits')) as any || { audits: [], nextId: 1 };
+
     const audit = {
-      id: auditStore.nextId++,
+      id: data.nextId++,
       ...auditData,
       opening: parseFloat(auditData.opening) || 0,
       accuracy: parseFloat(auditData.accuracy) || 0,
@@ -40,7 +41,9 @@ async function insertAudit(auditData: any) {
       updated_at: new Date().toISOString(),
     };
 
-    auditStore.audits.push(audit);
+    data.audits.push(audit);
+    await kv.set('habuild:audits', data);
+
     await createFeedbackNotification(audit);
 
     return { lastInsertRowid: audit.id };
@@ -52,8 +55,10 @@ async function insertAudit(auditData: any) {
 
 async function createFeedbackNotification(audit: any) {
   try {
+    const feedbackData: any = (await kv.get('habuild:feedback')) as any || { feedback: [], nextId: 1 };
+
     const feedback: any = {
-      id: feedbackStore.nextId++,
+      id: feedbackData.nextId++,
       audit_id: audit.id,
       agent_name: audit.agent,
       agent_phone: audit.phone_number || '',
@@ -81,7 +86,8 @@ async function createFeedbackNotification(audit: any) {
       agent_viewed_at: null,
     };
 
-    feedbackStore.feedback.push(feedback);
+    feedbackData.feedback.push(feedback);
+    await kv.set('habuild:feedback', feedbackData);
     console.log(`✓ Feedback notification created for ${audit.agent}`);
   } catch (error) {
     console.error('Error creating feedback:', error);

@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-let feedbackStore: any = { feedback: [], nextId: 1 };
+import { kv } from '@vercel/kv';
 
 async function getFeedbackData() {
-  return feedbackStore || { feedback: [], nextId: 1 };
+  try {
+    const data = (await kv.get('habuild:feedback')) as any;
+    return data || { feedback: [], nextId: 1 };
+  } catch (error) {
+    return { feedback: [], nextId: 1 };
+  }
 }
 
 async function saveFeedbackData(data: any) {
-  feedbackStore = data;
+  await kv.set('habuild:feedback', data);
 }
 
 export async function GET(request: NextRequest) {
