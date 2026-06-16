@@ -192,10 +192,31 @@ export default function Dashboard() {
                       <h3>{f.category}</h3>
                       <p className={styles.auditor}>Audited by: {f.auditor_name}</p>
                       <p className={styles.date}>
-                        Call: {new Date(f.call_date).toLocaleDateString()}
+                        📞 Phone: {f.agent_phone || 'N/A'}
+                      </p>
+                      <p className={styles.date}>
+                        📅 Call Date: {new Date(f.call_date).toLocaleDateString()}
+                      </p>
+                      <p className={styles.date}>
+                        📋 Audit Date: {new Date(f.audit_date).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
+
+                  {f.ratings && (
+                    <div className={styles.ratings}>
+                      <h4>Detailed Ratings (1-5 scale):</h4>
+                      <div className={styles.ratingsGrid}>
+                        <span>Opening: <strong>{f.ratings.opening}</strong></span>
+                        <span>Accuracy: <strong>{f.ratings.accuracy}</strong></span>
+                        <span>Listening: <strong>{f.ratings.listening}</strong></span>
+                        <span>Tone & Manner: <strong>{f.ratings.tone}</strong></span>
+                        <span>Knowledge: <strong>{f.ratings.knowledge}</strong></span>
+                        <span>Response Time: <strong>{f.ratings.response_time}</strong></span>
+                        <span>FCR: <strong>{f.ratings.fcr}</strong></span>
+                      </div>
+                    </div>
+                  )}
 
                   <div className={styles.feedback}>
                     <h4>Feedback:</h4>

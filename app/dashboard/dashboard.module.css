@@ -289,6 +289,41 @@
   word-break: break-word;
 }
 
+.ratings {
+  background-color: #F0F8FF;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border-left: 4px solid #D4AF37;
+}
+
+.ratings h4 {
+  margin: 0 0 12px 0;
+  color: #8B6F47;
+  font-size: 0.95rem;
+}
+
+.ratingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.ratingsGrid span {
+  color: #5C4033;
+  font-size: 0.9rem;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #E0E0E0;
+}
+
+.ratingsGrid strong {
+  color: #D4AF37;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
 .cardFooter {
   display: flex;
   justify-content: space-between;

@@ -64,6 +64,8 @@ async function createFeedbackNotification(audit: any) {
       agent_phone: audit.phone_number || '',
       auditor_name: audit.auditor,
       category: audit.category || 'General',
+      call_date: audit.call_date,
+      audit_date: audit.audit_date,
       score: parseFloat(
         (
           (audit.opening +
@@ -76,8 +78,16 @@ async function createFeedbackNotification(audit: any) {
           7
         ).toFixed(2)
       ),
+      ratings: {
+        opening: audit.opening,
+        accuracy: audit.accuracy,
+        listening: audit.listening,
+        tone: audit.tone,
+        knowledge: audit.knowledge,
+        response_time: audit.response_time,
+        fcr: audit.fcr,
+      },
       feedback: audit.call_summary || '',
-      call_date: audit.call_date,
       created_at: new Date().toISOString(),
       sent_at: null,
       delivery_status: 'pending',
