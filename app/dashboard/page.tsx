@@ -19,6 +19,7 @@ interface Feedback {
 }
 
 export default function Dashboard() {
+  const [inputName, setInputName] = useState('');
   const [agentName, setAgentName] = useState('');
   const [feedback, setFeedback] = useState<Feedback[]>([]);
   const [filter, setFilter] = useState('all');
@@ -26,6 +27,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     setAgentName('');
+    setInputName('');
     localStorage.clear();
     sessionStorage.clear();
   }, []);
@@ -35,6 +37,13 @@ export default function Dashboard() {
       fetchFeedback();
     }
   }, [filter]);
+
+  const handleLogin = () => {
+    if (inputName.trim()) {
+      setAgentName(inputName);
+      fetchFeedback();
+    }
+  };
 
   const fetchFeedback = async () => {
     setLoading(true);
@@ -99,15 +108,15 @@ export default function Dashboard() {
           <input
             type="text"
             placeholder="Enter your name..."
-            value={agentName}
-            onChange={(e) => setAgentName(e.target.value)}
+            value={inputName}
+            onChange={(e) => setInputName(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && inputName && handleLogin()}
             className={styles.input}
-            onKeyPress={(e) => e.key === 'Enter' && agentName && null}
           />
           <button
-            onClick={() => agentName && fetchFeedback()}
+            onClick={handleLogin}
             className={styles.button}
-            disabled={!agentName}
+            disabled={!inputName.trim()}
           >
             View My Feedback
           </button>
@@ -120,8 +129,11 @@ export default function Dashboard() {
               <button
                 onClick={() => {
                   setAgentName('');
+                  setInputName('');
                   setFeedback([]);
-                  localStorage.removeItem('agentName');
+                  setFilter('all');
+                  localStorage.clear();
+                  sessionStorage.clear();
                 }}
                 className={styles.logoutBtn}
               >
