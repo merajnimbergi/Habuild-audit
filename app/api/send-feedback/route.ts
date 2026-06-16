@@ -71,6 +71,7 @@ async function sendFeedbackEmail(feedback: any) {
     // If SendGrid is configured
     if (process.env.SENDGRID_API_KEY) {
       try {
+        // @ts-ignore - SendGrid is optional
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const sgMail = require('@sendgrid/mail');
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
