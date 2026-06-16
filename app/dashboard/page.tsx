@@ -33,8 +33,8 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (agentName && feedback.length > 0) {
-      fetchFeedback();
+    if (agentName) {
+      fetchFeedback(agentName);
     }
   }, [filter]);
 
