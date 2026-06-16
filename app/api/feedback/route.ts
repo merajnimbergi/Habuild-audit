@@ -1,23 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { kv } from '@vercel/kv';
 
-const fs = require('fs');
-const path = require('path');
-
-const FEEDBACK_FILE = path.join(process.cwd(), 'feedback_data.json');
-
-function getFeedbackData() {
+async function getFeedbackData() {
   try {
-    if (!fs.existsSync(FEEDBACK_FILE)) {
-      return { feedback: [], nextId: 1 };
-    }
-    return JSON.parse(fs.readFileSync(FEEDBACK_FILE, 'utf-8'));
+    const data = await kv.get('habuild:feedback');
+    return data || { feedback: [], nextId: 1 };
   } catch (error) {
     return { feedback: [], nextId: 1 };
   }
 }
 
-function saveFeedbackData(data: any) {
-  fs.writeFileSync(FEEDBACK_FILE, JSON.stringify(data, null, 2));
+async function saveFeedbackData(data: any) {
+  await kv.set('habuild:feedback', data);
 }
 
 export async function GET(request: NextRequest) {
@@ -26,7 +20,7 @@ export async function GET(request: NextRequest) {
     const agentName = searchParams.get('agent_name');
     const status = searchParams.get('status'); // 'pending', 'sent', 'viewed'
 
-    const data = getFeedbackData();
+    const data = await getFeedbackData();
     let feedback = data.feedback || [];
 
     if (agentName) {
@@ -64,13 +58,13 @@ export async function POST(request: NextRequest) {
     const { feedback_id, action } = body;
 
     if (action === 'mark_viewed') {
-      const data = getFeedbackData();
+      const data = await getFeedbackData();
       const feedback = data.feedback.find((f: any) => f.id === feedback_id);
 
       if (feedback) {
         feedback.agent_viewed = true;
         feedback.agent_viewed_at = new Date().toISOString();
-        saveFeedbackData(data);
+        await saveFeedbackData(data);
 
         return NextResponse.json(
           { success: true, feedback },
@@ -85,7 +79,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (action === 'send_email' || action === 'send_whatsapp') {
-      const data = getFeedbackData();
+      const data = await getFeedbackData();
       const feedback = data.feedback.find((f: any) => f.id === feedback_id);
 
       if (feedback) {
@@ -97,7 +91,7 @@ export async function POST(request: NextRequest) {
         if (!feedback.delivery_channels.includes(action.split('_')[1])) {
           feedback.delivery_channels.push(action.split('_')[1]);
         }
-        saveFeedbackData(data);
+        await saveFeedbackData(data);
 
         // TODO: Actually send email/WhatsApp here
         console.log(`Sending ${action} to ${feedback.agent_name}`);

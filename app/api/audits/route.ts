@@ -1,17 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { kv } from '@vercel/kv';
 
-const fs = require('fs');
-const path = require('path');
-
-const DATA_FILE = path.join(process.cwd(), 'audit_data.json');
-
-function getAudits(filters: any = {}) {
+async function getAudits(filters: any = {}) {
   try {
-    if (!fs.existsSync(DATA_FILE)) {
-      return [];
-    }
-    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-    let audits = data.audits || [];
+    const data = await kv.get('habuild:audits');
+    let audits = data?.audits || [];
 
     if (filters.auditor) {
       audits = audits.filter((a: any) => a.auditor === filters.auditor);
@@ -25,16 +18,14 @@ function getAudits(filters: any = {}) {
 
     return audits.sort((a: any, b: any) => new Date(b.call_date).getTime() - new Date(a.call_date).getTime());
   } catch (error) {
+    console.error('Error getting audits:', error);
     return [];
   }
 }
 
-function insertAudit(auditData: any) {
+async function insertAudit(auditData: any) {
   try {
-    let data = { audits: [], nextId: 1 };
-    if (fs.existsSync(DATA_FILE)) {
-      data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-    }
+    const data: any = await kv.get('habuild:audits') || { audits: [], nextId: 1 };
 
     const audit = {
       id: data.nextId++,
@@ -51,10 +42,9 @@ function insertAudit(auditData: any) {
     };
 
     data.audits.push(audit);
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+    await kv.set('habuild:audits', data);
 
-    // Create feedback notification for agent
-    createFeedbackNotification(audit);
+    await createFeedbackNotification(audit);
 
     return { lastInsertRowid: audit.id };
   } catch (error) {
@@ -63,15 +53,11 @@ function insertAudit(auditData: any) {
   }
 }
 
-function createFeedbackNotification(audit: any) {
+async function createFeedbackNotification(audit: any) {
   try {
-    const feedbackFile = path.join(process.cwd(), 'feedback_data.json');
-    let feedbackData = { feedback: [], nextId: 1 };
-    if (fs.existsSync(feedbackFile)) {
-      feedbackData = JSON.parse(fs.readFileSync(feedbackFile, 'utf-8'));
-    }
+    const feedbackData: any = await kv.get('habuild:feedback') || { feedback: [], nextId: 1 };
 
-    const feedback = {
+    const feedback: any = {
       id: feedbackData.nextId++,
       audit_id: audit.id,
       agent_name: audit.agent,
@@ -101,7 +87,7 @@ function createFeedbackNotification(audit: any) {
     };
 
     feedbackData.feedback.push(feedback);
-    fs.writeFileSync(feedbackFile, JSON.stringify(feedbackData, null, 2));
+    await kv.set('habuild:feedback', feedbackData);
     console.log(`✓ Feedback notification created for ${audit.agent}`);
   } catch (error) {
     console.error('Error creating feedback:', error);
@@ -121,7 +107,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert into database
-    const result = insertAudit(body);
+    const result = await insertAudit(body);
 
     return NextResponse.json(
       { success: true, id: result.lastInsertRowid },
@@ -151,7 +137,7 @@ export async function GET(request: NextRequest) {
       filters.end_date = searchParams.get('end_date') || '';
     }
 
-    const audits = getAudits(filters);
+    const audits = await getAudits(filters);
 
     return NextResponse.json({ audits }, { status: 200 });
   } catch (error) {
