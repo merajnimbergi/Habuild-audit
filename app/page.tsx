@@ -4,7 +4,7 @@ import { useState, FormEvent } from 'react';
 import styles from './page.module.css';
 
 const AUDITORS = ['Pooja', 'Prince', 'Shyam', 'Khushbu', 'Safreen'];
-const CATEGORIES = ['Enquiries', 'Payment', 'Session', 'Refund', 'Technical', 'Other'];
+const CATEGORIES = ['Enquiries', 'Payment', 'Session', 'Refund', 'Technical', 'Link Issue', 'Physio Feedback', 'Other'];
 const SUB_CATEGORIES = ['Guidance', 'Refund', 'Batch Info', 'Account', 'Session Details', 'Other'];
 
 export default function AuditForm() {
