@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
+  background: linear-gradient(135deg, #0B6E63 0%, #1B9B8F 50%, #2BC3AC 100%);
 }
 
 .card {
@@ -13,20 +14,20 @@
   padding: 40px;
   max-width: 900px;
   width: 100%;
-  border: 3px solid #D4AF37;
+  border: 3px solid #0B6E63;
 }
 
 .title {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #8B6F47;
+  color: #0B6E63;
   margin-bottom: 8px;
   text-align: center;
 }
 
 .subtitle {
   text-align: center;
-  color: #5C4033;
+  color: #1B9B8F;
   margin-bottom: 30px;
   font-size: 1.1rem;
 }
@@ -57,7 +58,7 @@
 
 .field label {
   font-weight: 600;
-  color: #5C4033;
+  color: #0B6E63;
   font-size: 0.95rem;
 }
 
@@ -65,11 +66,11 @@
 .field select,
 .field textarea {
   padding: 12px;
-  border: 2px solid #D4AF37;
+  border: 2px solid #0B6E63;
   border-radius: 8px;
   font-size: 1rem;
-  background-color: #FFF8E7;
-  color: #5C4033;
+  background-color: #E8F4F2;
+  color: #0B6E63;
   transition: all 0.3s ease;
 }
 
@@ -78,22 +79,22 @@
 .field textarea:focus {
   outline: none;
   background-color: white;
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 0 0 3px rgba(11, 110, 99, 0.1);
 }
 
 .field input::placeholder {
-  color: #B8860B;
+  color: #1B9B8F;
 }
 
 .metricsSection {
-  background-color: #FFF8E7;
+  background-color: #E8F4F2;
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid #D4AF37;
+  border: 1px solid #0B6E63;
 }
 
 .metricsSection h3 {
-  color: #8B6F47;
+  color: #0B6E63;
   margin-bottom: 16px;
   font-size: 1.1rem;
 }
@@ -112,7 +113,7 @@
 
 .metric label {
   font-weight: 600;
-  color: #5C4033;
+  color: #0B6E63;
   font-size: 0.85rem;
 }
 
@@ -121,10 +122,11 @@
   text-align: center;
   font-weight: bold;
   font-size: 1.1rem;
+  color: #0B6E63;
 }
 
 .averageBox {
-  background: linear-gradient(135deg, #FF6B9D 0%, #FFA07A 50%, #FFD93D 100%);
+  background: linear-gradient(135deg, #0B6E63 0%, #1B9B8F 50%, #2BC3AC 100%);
   padding: 16px 20px;
   border-radius: 8px;
   display: flex;
@@ -159,10 +161,10 @@
 }
 
 .submitBtn {
-  background-color: #8B6F47;
+  background-color: #0B6E63;
   color: white;
   padding: 14px 28px;
-  border: 2px solid #D4AF37;
+  border: 2px solid #0B6E63;
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
@@ -172,10 +174,10 @@
 }
 
 .submitBtn:hover:not(:disabled) {
-  background-color: #D4AF37;
-  color: #5C4033;
+  background-color: #1B9B8F;
+  color: white;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+  box-shadow: 0 8px 20px rgba(11, 110, 99, 0.3);
 }
 
 .submitBtn:disabled {

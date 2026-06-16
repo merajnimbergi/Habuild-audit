@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #FF6B9D 0%, #FFA07A 50%, #FFD93D 100%);
+  background: linear-gradient(135deg, #0B6E63 0%, #1B9B8F 50%, #2BC3AC 100%);
   padding: 20px;
 }
 
@@ -29,28 +29,28 @@
   max-width: 400px;
   margin: 0 auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  border: 3px solid #D4AF37;
+  border: 3px solid #0B6E63;
   text-align: center;
 }
 
 .loginCard h2 {
-  color: #8B6F47;
+  color: #0B6E63;
   margin-bottom: 10px;
 }
 
 .loginCard p {
-  color: #5C4033;
+  color: #1B9B8F;
   margin-bottom: 20px;
 }
 
 .input {
   width: 100%;
   padding: 12px;
-  border: 2px solid #D4AF37;
+  border: 2px solid #0B6E63;
   border-radius: 8px;
   font-size: 1rem;
-  background-color: #FFF8E7;
-  color: #5C4033;
+  background-color: #E8F4F2;
+  color: #0B6E63;
   box-sizing: border-box;
   margin-bottom: 20px;
 }
@@ -58,14 +58,14 @@
 .input:focus {
   outline: none;
   background-color: white;
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 0 0 3px rgba(11, 110, 99, 0.1);
 }
 
 .button {
-  background-color: #8B6F47;
+  background-color: #0B6E63;
   color: white;
   padding: 12px 28px;
-  border: 2px solid #D4AF37;
+  border: 2px solid #0B6E63;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
@@ -75,8 +75,8 @@
 }
 
 .button:hover:not(:disabled) {
-  background-color: #D4AF37;
-  color: #5C4033;
+  background-color: #1B9B8F;
+  color: white;
   transform: translateY(-2px);
 }
 
@@ -109,7 +109,7 @@
 
 .agentInfo h2 {
   margin: 0;
-  color: #8B6F47;
+  color: #0B6E63;
   font-size: 1.5rem;
 }
 
@@ -135,10 +135,10 @@
 }
 
 .filterBtn {
-  background-color: #FFF8E7;
-  color: #5C4033;
+  background-color: #E8F4F2;
+  color: #0B6E63;
   padding: 10px 16px;
-  border: 2px solid #D4AF37;
+  border: 2px solid #0B6E63;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
@@ -146,14 +146,14 @@
 }
 
 .filterBtn:hover {
-  background-color: #D4AF37;
-  color: #5C4033;
+  background-color: #0B6E63;
+  color: white;
 }
 
 .filterBtn.active {
-  background-color: #8B6F47;
+  background-color: #0B6E63;
   color: white;
-  border-color: #8B6F47;
+  border-color: #0B6E63;
 }
 
 .loading {
@@ -188,7 +188,7 @@
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #D4AF37;
+  border-left: 4px solid #0B6E63;
   position: relative;
   transition: transform 0.3s, box-shadow 0.3s;
 }
@@ -199,15 +199,15 @@
 }
 
 .feedbackCard.unviewed {
-  background-color: #FFFEF5;
-  border-left-color: #FF6B9D;
+  background-color: #E8F4F2;
+  border-left-color: #1B9B8F;
 }
 
 .newBadge {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: #FF6B9D;
+  background-color: #D74E4E;
   color: white;
   padding: 4px 12px;
   border-radius: 20px;
@@ -229,20 +229,21 @@
   justify-content: center;
   width: 80px;
   height: 80px;
-  border: 3px solid #D4AF37;
+  border: 3px solid #0B6E63;
   border-radius: 12px;
-  background-color: #FFF8E7;
+  background-color: #E8F4F2;
   flex-shrink: 0;
 }
 
 .score {
   font-size: 2rem;
   font-weight: bold;
+  color: #0B6E63;
 }
 
 .scoreLabel {
   font-size: 0.8rem;
-  color: #5C4033;
+  color: #0B6E63;
   font-weight: 600;
 }
 
@@ -252,13 +253,13 @@
 
 .headerInfo h3 {
   margin: 0;
-  color: #8B6F47;
+  color: #0B6E63;
   font-size: 1.2rem;
 }
 
 .auditor {
   margin: 4px 0;
-  color: #5C4033;
+  color: #0B6E63;
   font-size: 0.9rem;
 }
 
@@ -269,7 +270,7 @@
 }
 
 .feedback {
-  background-color: #FFF8E7;
+  background-color: #E8F4F2;
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 15px;
@@ -277,29 +278,29 @@
 
 .feedback h4 {
   margin: 0 0 8px 0;
-  color: #8B6F47;
+  color: #0B6E63;
   font-size: 0.95rem;
 }
 
 .feedback p {
   margin: 0;
-  color: #5C4033;
+  color: #0B6E63;
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 .ratings {
-  background-color: #F0F8FF;
+  background-color: #E8F4F2;
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 15px;
-  border-left: 4px solid #D4AF37;
+  border-left: 4px solid #0B6E63;
 }
 
 .ratings h4 {
   margin: 0 0 12px 0;
-  color: #8B6F47;
+  color: #0B6E63;
   font-size: 0.95rem;
 }
 
@@ -310,16 +311,16 @@
 }
 
 .ratingsGrid span {
-  color: #5C4033;
+  color: #0B6E63;
   font-size: 0.9rem;
   padding: 8px;
   background: white;
   border-radius: 6px;
-  border: 1px solid #E0E0E0;
+  border: 1px solid #0B6E63;
 }
 
 .ratingsGrid strong {
-  color: #D4AF37;
+  color: #0B6E63;
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -340,7 +341,7 @@
 }
 
 .markViewedBtn {
-  background-color: #4CAF50;
+  background-color: #1B9B8F;
   color: white;
   padding: 8px 16px;
   border: none;
@@ -351,11 +352,11 @@
 }
 
 .markViewedBtn:hover {
-  background-color: #45a049;
+  background-color: #0B6E63;
 }
 
 .viewedBadge {
-  color: #4CAF50;
+  color: #1B9B8F;
   font-weight: 600;
   font-size: 0.9rem;
 }
